@@ -64,7 +64,7 @@ SELECT
     CASE WHEN RAND() > 0.5 THEN 'Male' ELSE 'Female' END, 
     CASE WHEN RAND() > 0.5 THEN 'Available' ELSE 'Adopted' END, 
     CAST(DATE_SUB(CURDATE(), INTERVAL FLOOR(RAND() * 1000) DAY) AS DATE), 
-    'Unknown', (SELECT FosterHomeID FROM TempAvailableFosterHomes ORDER BY RAND() LIMIT 1)
+    NULL, 'Unknown', (SELECT FosterHomeID FROM TempAvailableFosterHomes ORDER BY RAND() LIMIT 1)
 FROM Pets
 ORDER BY RAND()
 LIMIT 10000;
