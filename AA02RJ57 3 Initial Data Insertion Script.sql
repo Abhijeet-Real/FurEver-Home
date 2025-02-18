@@ -1,3 +1,6 @@
+-- Relax FOREIGN KEY Constraints
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- Insert 20 records into the FosterHomes table with Indian records
 
 INSERT INTO FosterHomes (FosterHomeID, Name, Address, ContactPerson, ContactPhone, Capacity, CurrentOccupancy) VALUES
@@ -150,3 +153,8 @@ INSERT INTO Pets (PetID, Name, Species, Breed, Age, Gender, Status, RescueDate, 
 (38, 'Maya', 'Dog', 'Himalayan Sheepdog', 6, 'Female', 'Available', '2025-03-04', NULL, 18),
 (39, 'Sheela', 'Dog', 'Jonangi', 2, 'Female', 'Available', '2025-03-05', NULL, 19),
 (40, 'Ravi', 'Dog', 'Pandikona', 3, 'Male', 'Available', '2025-03-06', NULL, 20);
+
+
+
+-- Enforce FOREIGN KEY Constraints
+SET FOREIGN_KEY_CHECKS = 1;
