@@ -1,117 +1,65 @@
--- DDL: ALTER TABLE Statements for Pet Adoption and Rescue Management System
+-- Drop the schema if it exists to avoid errors
+DROP SCHEMA IF EXISTS aa02rj57_furever_home;
 
--- 1. Adding a new column to track the adoption fee in the Adopters table
-ALTER TABLE Adopters 
-ADD COLUMN AdoptionFee DECIMAL(10,2) DEFAULT 0.00;
+-- Recreate the schema
+CREATE SCHEMA aa02rj57_furever_home;
+USE aa02rj57_furever_home;
 
--- 2. Modifying the data type of Phone in FosterHomes to accommodate international numbers
-ALTER TABLE FosterHomes 
-MODIFY COLUMN ContactPhone VARCHAR(20);
-
-UPDATE Pets 
-SET SpeciesID = (SELECT MIN(SpeciesID) FROM Species) 
-WHERE SpeciesID IS NULL;
-
--- 3. Adding a NOT NULL constraint to ensure every pet has a species assigned
-ALTER TABLE Pets 
-MODIFY COLUMN SpeciesID INT NOT NULL;
-
--- 4. Renaming the 'ContactPerson' column in FosterHomes to 'ManagerName' for better clarity
-ALTER TABLE FosterHomes 
-RENAME COLUMN ContactPerson TO ManagerName;
-
--- 5. Creating CustomerFeedback table before modifying it
--- Creating the CustomerFeedback table if it doesn't exist
-CREATE TABLE IF NOT EXISTS CustomerFeedback (
-    FeedbackID INT PRIMARY KEY AUTO_INCREMENT,
-    AdopterID INT,
-    Comments TEXT,
-    Rating INT,
-    FeedbackDate DATE,
-    FOREIGN KEY (AdopterID) REFERENCES Adopters(AdopterID) ON DELETE CASCADE
+-- Table 1: FosterHomes
+CREATE TABLE FosterHomes (
+    FosterHomeID INT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Address TEXT NOT NULL,
+    ContactPerson VARCHAR(100) NOT NULL,
+    ContactPhone VARCHAR(15) NOT NULL,
+    Capacity INT NOT NULL,
+    CurrentOccupancy INT DEFAULT 0
 );
 
--- 5. Dropping an unnecessary column from CustomerFeedback (if FeedbackDate is redundant)
-ALTER TABLE CustomerFeedback 
-DROP COLUMN FeedbackDate;
+-- Table 2: Pets
+CREATE TABLE Pets (
+    PetID INT PRIMARY KEY,
+    Name VARCHAR(50) NOT NULL,
+    Species VARCHAR(30) NOT NULL,
+    Breed VARCHAR(50),
+    Age INT,
+    Gender VARCHAR(10),
+    Status VARCHAR(20) DEFAULT 'Available',
+    RescueDate DATE NOT NULL,
+    AdoptionDate DATE,
+    FosterHomeID INT,
+    FOREIGN KEY (FosterHomeID) REFERENCES FosterHomes(FosterHomeID)
+);
 
--- 6. Adding a Foreign Key constraint to link CustomerFeedback with Adopters
-ALTER TABLE CustomerFeedback 
-ADD CONSTRAINT fk_adopter_feedback FOREIGN KEY (AdopterID) REFERENCES Adopters(AdopterID) ON DELETE CASCADE;
+-- Table 3: Adopters
+CREATE TABLE Adopters (
+    AdopterID INT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Phone VARCHAR(15) NOT NULL,
+    Address TEXT NOT NULL
+);
 
--- 7. Renaming the 'Species' table to 'PetSpecies' to avoid confusion
-ALTER TABLE Species 
-RENAME TO PetSpecies;
+-- Table 4: MedicalRecords
+CREATE TABLE MedicalRecords (
+    MedicalRecordID INT PRIMARY KEY,
+    PetID INT UNIQUE,
+    VaccinationDate DATE,
+    DiseaseHistory TEXT,
+    IsVaccinated BOOLEAN DEFAULT FALSE,
+    Notes TEXT,
+    FOREIGN KEY (PetID) REFERENCES Pets(PetID)
+);
 
--- 8. Adding a UNIQUE constraint to ensure no duplicate phone numbers exist in FosterHomes
-ALTER TABLE FosterHomes 
-ADD CONSTRAINT unique_contact_phone UNIQUE (ContactPhone);
-
--- 9. Updating triggers to avoid recursive updates
-DROP TRIGGER IF EXISTS after_status_update;
-DELIMITER $$
-CREATE TRIGGER after_status_update
-BEFORE UPDATE ON Pets
-FOR EACH ROW
-BEGIN
-    IF NEW.Status = 'Adopted' AND OLD.Status <> 'Adopted' THEN
-        SET NEW.AdoptionDate = NOW();
-    END IF;
-END$$
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS after_pet_insert;
-DELIMITER $$
-CREATE TRIGGER after_pet_insert
-AFTER INSERT ON Pets
-FOR EACH ROW
-BEGIN
-    UPDATE FosterHomes
-    SET CurrentOccupancy = CurrentOccupancy + 1
-    WHERE FosterHomeID = NEW.FosterHomeID;
-END$$
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS after_pet_update;
-DELIMITER $$
-CREATE TRIGGER after_pet_update
-BEFORE UPDATE ON Pets
-FOR EACH ROW
-BEGIN
-    IF OLD.FosterHomeID IS NOT NULL AND OLD.FosterHomeID <> NEW.FosterHomeID THEN
-        UPDATE FosterHomes
-        SET CurrentOccupancy = CurrentOccupancy - 1
-        WHERE FosterHomeID = OLD.FosterHomeID;
-    END IF;
-    IF NEW.FosterHomeID IS NOT NULL AND OLD.FosterHomeID <> NEW.FosterHomeID THEN
-        UPDATE FosterHomes
-        SET CurrentOccupancy = CurrentOccupancy + 1
-        WHERE FosterHomeID = NEW.FosterHomeID;
-    END IF;
-END$$
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS after_pet_delete;
-DELIMITER $$
-CREATE TRIGGER after_pet_delete
-AFTER DELETE ON Pets
-FOR EACH ROW
-BEGIN
-    UPDATE FosterHomes
-    SET CurrentOccupancy = CurrentOccupancy - 1
-    WHERE FosterHomeID = OLD.FosterHomeID;
-END$$
-DELIMITER ;
-
-DROP TRIGGER IF EXISTS before_foster_delete;
-DELIMITER $$
-CREATE TRIGGER before_foster_delete
-BEFORE DELETE ON FosterHomes
-FOR EACH ROW
-BEGIN
-    IF OLD.CurrentOccupancy > 0 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Cannot delete a FosterHome that still has pets.';
-    END IF;
-END$$
-DELIMITER ;
+-- Table 5: Rescuers
+CREATE TABLE Rescuers (
+    RescuerID INT PRIMARY KEY,
+    Name VARCHAR(100) NOT NULL,
+    Phone VARCHAR(15) NOT NULL,
+    Organization VARCHAR(100),
+    AdopterID INT,
+    PetID INT UNIQUE,
+    RescueDate DATE NOT NULL,
+    FOREIGN KEY (AdopterID) REFERENCES Adopters(AdopterID),
+    FOREIGN KEY (PetID) REFERENCES Pets(PetID)
+);
