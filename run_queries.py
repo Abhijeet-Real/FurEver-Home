@@ -102,7 +102,7 @@ for sql_file in sql_files:
                     nb.cells.append(nbf.v4.new_markdown_cell(cell_content))
             except exc.SQLAlchemyError:
                 transaction.rollback()
-                nb.cells.append(nbf.v4.new_markdown_cell(""))
+                continue  # Skip adding anything for failed queries
 
 # Save the notebook
 notebook_filename = "SQL_Execution_Report.ipynb"
