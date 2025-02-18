@@ -87,30 +87,6 @@ BEGIN
 END$$
 DELIMITER ;
 
--- Trigger 2: Cascade delete Rescuers when a Pet is deleted
-DELIMITER $$
-CREATE TRIGGER after_pet_delete_rescuer
-AFTER DELETE ON Pets
-FOR EACH ROW
-BEGIN
-    DELETE FROM Rescuers
-    WHERE PetID = OLD.PetID;
-END$$
-DELIMITER ;
-
--- Trigger 3: Prevent deletion of FosterHomes if CurrentOccupancy > 0
-DELIMITER $$
-CREATE TRIGGER before_foster_delete
-BEFORE DELETE ON FosterHomes
-FOR EACH ROW
-BEGIN
-    IF OLD.CurrentOccupancy > 0 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Cannot delete a FosterHome that still has pets.';
-    END IF;
-END$$
-DELIMITER ;
-
 -- Trigger 4: Handle deletion of Adopters
 -- If an Adopter is deleted, set AdopterID to NULL in Rescuers to avoid orphan records
 DELIMITER $$
