@@ -1,159 +1,185 @@
-# **SQL Scripts Documentation**
+# SQL Scripts Documentation (Markdown Version)
 
-## **1. Database Schema Definition Script**
+## 1. Database Schema Definition Script
 
-### **Description**
-The **Database Schema Definition Script** sets up the relational database for the **Pet Adoption and Foster Care System**. It defines tables with appropriate constraints and relationships to ensure data integrity and efficiency.
+### Description
+The **Create Table** script sets up the database schema for a **pet adoption and foster care system**. It defines five tables:
 
-### **Schema Details**
+- **FosterHomes** - Stores information about foster homes.
+- **Pets** - Stores details of pets available for adoption.
+- **Adopters** - Contains information on individuals adopting pets.
+- **MedicalRecords** - Maintains health and medical records for pets.
+- **Rescuers** - Tracks individuals who rescue pets.
 
-#### **FosterHomes Table**
-- **FosterHomeID** (INT, PK) - Unique identifier for each foster home.
-- **Name** (VARCHAR(100)) - Name of the foster home.
-- **Address** (TEXT) - Location details.
-- **ContactPerson** (VARCHAR(100)) - Name of the primary contact person.
-- **ContactPhone** (VARCHAR(15)) - Contact phone number.
-- **Capacity** (INT) - Maximum number of pets allowed.
-- **CurrentOccupancy** (INT) - Number of pets currently housed.
+### Schema Details
+#### FosterHomes Table
+| Column Name  | Data Type | Description |
+|-------------|-----------|-------------|
+| FosterHomeID | INT (PK) | Unique identifier |
+| Name | VARCHAR(100) | Foster home's name |
+| Address | TEXT | Address details |
+| ContactPerson | VARCHAR(100) | Name of contact person |
+| ContactPhone | VARCHAR(15) | Contact number |
+| Capacity | INT | Maximum pets allowed |
+| CurrentOccupancy | INT | Current number of pets housed |
 
-#### **Pets Table**
-- **PetID** (INT, PK) - Unique identifier for each pet.
-- **Name** (VARCHAR(50)) - Name of the pet.
-- **Species** (VARCHAR(30)) - Type of pet (e.g., Dog, Cat, Bird).
-- **Breed** (VARCHAR(50)) - Breed of the pet.
-- **Age** (INT) - Pet's age in years.
-- **Gender** (VARCHAR(10)) - Gender of the pet.
-- **Status** (VARCHAR(20)) - Availability status (Adopted/Available).
-- **RescueDate** (DATE) - Date of rescue.
-- **AdoptionDate** (DATE, NULL) - Date of adoption.
-- **FosterHomeID** (INT, FK) - Links to **FosterHomes**.
+#### Pets Table
+| Column Name  | Data Type | Description |
+|-------------|-----------|-------------|
+| PetID | INT (PK) | Unique identifier |
+| Name | VARCHAR(50) | Pet's name |
+| Species | VARCHAR(30) | Type of pet |
+| Breed | VARCHAR(50) | Breed of pet |
+| Age | INT | Age in years |
+| Gender | VARCHAR(10) | Gender |
+| Status | VARCHAR(20) | Adoption availability |
+| RescueDate | DATE | Date rescued |
+| AdoptionDate | DATE (NULL) | Date adopted |
+| FosterHomeID | INT (FK) | Links to FosterHomes |
 
-#### **Adopters Table**
-- **AdopterID** (INT, PK) - Unique identifier for each adopter.
-- **Name** (VARCHAR(100)) - Full name.
-- **Email** (VARCHAR(100), UNIQUE) - Email address.
-- **Phone** (VARCHAR(15)) - Contact number.
-- **Address** (TEXT) - Residential address.
+#### Adopters Table
+| Column Name  | Data Type | Description |
+|-------------|-----------|-------------|
+| AdopterID | INT (PK) | Unique identifier |
+| Name | VARCHAR(100) | Name of adopter |
+| Email | VARCHAR(100) | Unique email |
+| Phone | VARCHAR(15) | Contact number |
+| Address | TEXT | Address details |
 
-#### **MedicalRecords Table**
-- **MedicalRecordID** (INT, PK) - Unique identifier for each medical record.
-- **PetID** (INT, FK) - Links to **Pets**.
-- **VaccinationDate** (DATE) - Last vaccination date.
-- **DiseaseHistory** (TEXT) - Past illnesses.
-- **IsVaccinated** (BOOLEAN) - 1 if vaccinated, 0 if not.
-- **Notes** (TEXT) - Additional medical details.
+#### MedicalRecords Table
+| Column Name  | Data Type | Description |
+|-------------|-----------|-------------|
+| MedicalRecordID | INT (PK) | Unique identifier |
+| PetID | INT (FK) | Links to Pets |
+| VaccinationDate | DATE | Last vaccination date |
+| DiseaseHistory | TEXT | Record of past illnesses |
+| IsVaccinated | BOOLEAN | Vaccination status |
+| Notes | TEXT | Additional medical notes |
 
-#### **Rescuers Table**
-- **RescuerID** (INT, PK) - Unique identifier for each rescuer.
-- **Name** (VARCHAR(100)) - Name of the rescuer.
-- **Phone** (VARCHAR(15)) - Contact details.
-- **Organization** (VARCHAR(100)) - Associated organization (if any).
-- **AdopterID** (INT, FK) - Links to **Adopters**.
-- **PetID** (INT, FK) - Links to **Pets**.
-- **RescueDate** (DATE) - Date of rescue.
+#### Rescuers Table
+| Column Name  | Data Type | Description |
+|-------------|-----------|-------------|
+| RescuerID | INT (PK) | Unique identifier |
+| Name | VARCHAR(100) | Name of rescuer |
+| Phone | VARCHAR(15) | Contact details |
+| Organization | VARCHAR(100) | Organization (if applicable) |
+| AdopterID | INT (FK) | Links to Adopters |
+| PetID | INT (FK) | Links to Pets |
+| RescueDate | DATE | Date of rescue |
 
----
+## 2. Database Automation & Integrity
 
-## **2. Initial Data Insertion Script**
+### Description
+The **Insert Records** script populates tables with sample data, providing realistic entries.
 
-### **Description**
-The **Initial Data Insertion Script** populates the tables with sample records for testing and demonstration purposes.
+### Data Entries
+- **FosterHomes Table:** 20 records with real-world locations.
+- **Pets Table:** 20 records linking pets to foster homes.
+- **Adopters Table:** 20 records of adopters.
+- **MedicalRecords Table:** 20 medical history records.
+- **Rescuers Table:** 20 rescuers assigned to pets.
 
-### **Sample Data Entries**
-- **FosterHomes**: 20 records with realistic names and contact details.
-- **Pets**: 20 records linking pets to foster homes.
-- **Adopters**: 20 adopters with realistic information.
-- **MedicalRecords**: 20 entries tracking pet health.
-- **Rescuers**: 20 rescuers assigned to rescued pets.
+## 3. Initial Data Insertion Script
 
----
+### Triggers Implemented
+#### Adoption Tracking
+```sql
+CREATE TRIGGER after_status_update
+AFTER UPDATE ON Pets
+FOR EACH ROW
+WHEN NEW.Status = 'Adopted'
+BEGIN
+    UPDATE Pets SET AdoptionDate = CURRENT_DATE WHERE PetID = NEW.PetID;
+END;
+```
 
-## **3. Database Automation & Integrity Triggers**
+#### Foster Home Occupancy Management
+```sql
+CREATE TRIGGER after_pet_insert
+AFTER INSERT ON Pets
+FOR EACH ROW
+BEGIN
+    UPDATE FosterHomes SET CurrentOccupancy = CurrentOccupancy + 1 WHERE FosterHomeID = NEW.FosterHomeID;
+END;
+```
 
-### **Description**
-This script automates database updates and ensures data consistency through triggers.
+## 4. Optimized Data Retrieval & Querying
 
-### **Triggers Implemented**
-
-#### **Adoption Tracking**
-- **Trigger:** `after_status_update`
-- **Action:** Automatically sets `AdoptionDate` when the pet's status is updated to "Adopted."
-
-#### **Foster Home Occupancy Management**
-- **Trigger:** `after_pet_insert` → Increases `CurrentOccupancy` when a pet is assigned to a foster home.
-- **Trigger:** `after_pet_update` → Updates `CurrentOccupancy` when a pet is moved between foster homes.
-- **Trigger:** `after_pet_delete` → Decreases `CurrentOccupancy` when a pet is removed.
-- **Trigger:** `before_pet_insert` → Prevents over-occupancy.
-
-#### **Cascading Deletions**
-- **Trigger:** `after_pet_delete_medical` → Deletes associated `MedicalRecords` when a pet is removed.
-- **Trigger:** `after_pet_delete_rescuer` → Deletes associated `Rescuers` records when a pet is removed.
-- **Trigger:** `before_foster_delete` → Prevents deletion of foster homes with active pets.
-
----
-
-## **4. Optimized Data Retrieval & Querying**
-
-### **Description**
-This script contains optimized SQL queries for retrieving relevant data efficiently.
-
-### **Implemented Queries**
+### Queries Implemented
 - Retrieve all pets and their details.
-- Find adopters who adopted pets within the last 6 months.
+- Retrieve only available pets.
+- Retrieve pets younger than a specified age.
+- Retrieve pets whose names match patterns using `LIKE`.
+- Retrieve pets sorted by `ORDER BY`.
+- Count pets by species and filter species with more than 5 pets.
+- Find adopters who adopted pets in the last 6 months.
 - Retrieve medical history of unvaccinated pets.
-- Optimize queries with indexes on frequently searched fields (e.g., `Pets.Name`, `Adopters.Email`).
+
+## 5. Database Normalization & Constraints Enforcement
+
+### Normalization Steps
+#### 1NF (Atomicity)
+- **Problem:** Redundant `Species` column in `Pets`.
+- **Solution:**
+  - Created a `Species` table.
+  - Replaced `Species` in `Pets` with `SpeciesID` as a foreign key.
+
+#### 2NF (No Partial Dependencies)
+- **Problem:** Contact details stored within `FosterHomes`.
+- **Solution:** Moved `ContactPerson` and `ContactPhone` to a new `ContactDetails` table.
+
+#### 3NF (No Transitive Dependencies)
+- Removed derived attributes and ensured each column is functionally dependent on the primary key.
+
+## 6. Comprehensive CRUD Operations
+
+### Updating Records
+```sql
+UPDATE Pets
+SET Status = 'Adopted', AdoptionDate = CURDATE()
+WHERE PetID = 101;
+```
+
+### Deleting Records
+```sql
+DELETE FROM MedicalRecords
+WHERE PetID IN (SELECT PetID FROM Pets WHERE Status = 'Adopted' AND AdoptionDate < DATE_SUB(CURDATE(), INTERVAL 1 YEAR));
+```
+
+### Inserting New Records
+```sql
+INSERT INTO Pets (PetID, Name, Species, Breed, Age, Gender, Status, RescueDate, FosterHomeID)
+VALUES (201, 'Buddy', 'Dog', 'Labrador', 2, 'Male', 'Available', CURDATE(), 3);
+```
+
+## 7. Database Schema Modification & Optimization
+
+### Key Modifications
+- **Added Columns**: `AdoptionFee` in `Adopters`, `ContactID` in `FosterHomes`.
+- **Changed Data Types**: `ContactPhone` updated for international formats.
+- **Foreign Key Enhancements**: Linked `CustomerFeedback` with `Adopters`.
+- **Indexing for Performance**:
+  - `Pets(Name)`, `Adopters(Email)`, `FosterHomes(Capacity)` indexed.
+
+## 8. Stress Testing Script
+
+### Components
+#### Bulk Insert for FosterHomes
+```sql
+INSERT INTO FosterHomes (FosterHomeID, Name, Address, Capacity, CurrentOccupancy, ContactID, ManagerName)
+SELECT ROW_NUMBER() OVER () + 10000, CONCAT('FosterHome_', ROW_NUMBER() OVER ()), CONCAT('Address_', ROW_NUMBER() OVER ()),
+FLOOR(RAND() * 500) + 500, 0, FLOOR(RAND() * 100) + 1, CONCAT('Manager_', ROW_NUMBER() OVER ())
+FROM (SELECT * FROM information_schema.tables LIMIT 5000) AS T;
+```
+
+### Expected Results
+- **Performance Testing**: Ensures efficient bulk inserts and updates.
+- **Referential Integrity**: Maintains foreign key constraints.
+- **Trigger Testing**: Validates adoption tracking.
+
+### Conclusion
+The stress testing script simulates high-load scenarios to validate database efficiency and reliability.
 
 ---
-
-## **5. Database Normalization & Constraints Enforcement**
-
-### **Description**
-This script ensures compliance with **1NF, 2NF, and 3NF** and enforces referential integrity.
-
-### **Normalization Steps**
-- **1NF:** Ensured atomicity by moving species to a separate `Species` table.
-- **2NF:** Removed partial dependencies by moving contact details into a separate `ContactDetails` table.
-- **3NF:** Eliminated transitive dependencies by ensuring every column depends only on the primary key.
-
-### **Constraints Implemented**
-- **Foreign Keys:** Prevent orphan records.
-- **CHECK Constraints:** Validate data integrity (e.g., `Pet Age >= 0`).
-- **Indexes:** Improve query performance on key columns.
-
----
-
-## **6. Comprehensive CRUD Operations**
-
-### **Description**
-This script includes Create, Read, Update, and Delete (CRUD) operations for managing records in the system.
-
-### **Examples**
-- **Updating pet adoption status**
-- **Deleting old medical records**
-- **Inserting new adopters and rescued pets**
-
----
-
-## **7. Database Schema Modification & Optimization (DDL ALTER Script)**
-
-### **Description**
-The **DDL ALTER script** was created to **modify and optimize the database structure** while preserving data.
-
-### **Key Modifications**
-1. **Adding New Columns**
-   - Added `AdoptionFee` to `Adopters`.
-   - Added `ContactID` to `FosterHomes`.
-2. **Modifying Data Types**
-   - Expanded `ContactPhone` field.
-3. **Adding Constraints**
-   - Enforced `NOT NULL` on `SpeciesID` in `Pets`.
-   - Implemented CHECK constraints for `Age` and `Capacity`.
-4. **Foreign Key Enhancements**
-   - Ensured referential integrity for **CustomerFeedback** and **Rescuers**.
-5. **Performance Indexing**
-   - Created indexes on `Pets(Name)`, `Adopters(Email)`, and `FosterHomes(Capacity)`.
-
----
-
-This documentation provides a structured overview of all major scripts, ensuring a well-documented and efficient pet adoption management system. 🚀
+**End of Documentation**
 
