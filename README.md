@@ -38,7 +38,7 @@ The **Pet Adoption and Rescue Management System** is a structured **SQL-based da
 ├── 📄 AA02RJ57 7 Database Schema Modification & Optimization.sql
 ├── 📄 ERD FurEver Home - Evolution 1.pdf   # Entity-Relationship Diagram (ERD)
 ├── 📄 SQL Script Documentation.md         # Detailed documentation
-└── 📄 Template of Project Report.docx     # Project report template
+└── 📄 Project_Report.ipynb     # Project report template
 ```
 
 ---
@@ -46,7 +46,7 @@ The **Pet Adoption and Rescue Management System** is a structured **SQL-based da
 ## **⚙️ Setup & Installation**
 1. **Clone the Repository:**
    ```sh
-   git clone https://github.com/your-username/Pet-Adoption-Rescue-Management.git
+   git clone https://github.com/Abhijeet-Real/Pet-Adoption-Rescue-Management.git
    cd Pet-Adoption-Rescue-Management
    ```
 2. **Import the Database:**
@@ -143,8 +143,8 @@ We welcome contributions! To contribute:
 
 ## **📞 Contact & Support**
 For any issues or queries, reach out via:
-📧 **Email:** your.email@example.com  
-🔗 **GitHub Issues:** [Open an issue](https://github.com/your-username/Pet-Adoption-Rescue-Management/issues)
+📧 **Email:** Abhijeet1472@gmail.com 
+🔗 **GitHub Issues:** [Open an issue](https://github.com/Abhijeet-Real/Pet-Adoption-Rescue-Management/issues)
 
 🚀 **Happy Coding!** 🎉
 
