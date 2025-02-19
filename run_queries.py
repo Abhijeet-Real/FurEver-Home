@@ -5,6 +5,7 @@ import time
 from sqlalchemy import create_engine, exc, text
 from urllib.parse import quote_plus
 from login import get_db_credentials
+from index_sql import sql_files
 
 # Load database credentials securely
 DB_USERNAME, DB_PASSWORD, DB_HOST, DB_NAME, DB_TYPE = get_db_credentials()
@@ -45,18 +46,6 @@ with engine.connect() as connection:
 
 # Wait for MySQL to process inserts
 time.sleep(2)
-
-# List of SQL files
-sql_files = [
-    "AA02RJ57 1 Database Schema Definition Script.sql",
-    "AA02RJ57 2 Database Automation & Integrity.sql",
-    "AA02RJ57 3 Initial Data Insertion Script.sql",
-    "AA02RJ57 4 Optimized Data Retrieval & Querying.sql",
-    "AA02RJ57 5 Database Normalization & Constraints Enforcement.sql",
-    "AA02RJ57 6 Comprehensive CRUD Operations.sql",
-    "AA02RJ57 7 Database Schema Modification & Optimization.sql",
-    "AA02RJ57 8 Stress Testing Script.sql",
-]
 
 # Initialize Jupyter notebook
 nb = nbf.v4.new_notebook()
