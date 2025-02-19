@@ -7,6 +7,10 @@ from urllib.parse import quote_plus
 from login import get_db_credentials
 from index_sql import sql_files
 
+
+# Filter out the SQL files that are not required for stress test script
+# sql_files = sql_files[0:1] + sql_files[4:5]
+
 # Load database credentials securely
 DB_USERNAME, DB_PASSWORD, DB_HOST, DB_NAME, DB_TYPE = get_db_credentials()
 
