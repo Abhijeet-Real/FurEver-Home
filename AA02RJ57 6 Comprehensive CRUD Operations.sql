@@ -36,7 +36,7 @@ SET SQL_SAFE_UPDATES = 1;
 -- Step 3: Inserting New Records
 -- 1. Insert a new pet into the database
 INSERT INTO Pets (PetID, Name, Species, Breed, Age, Gender, Status, RescueDate, FosterHomeID) 
-VALUES (201, 'Buddy', 'Dog', 'Labrador', 2, 'Male', 'Available', CURDATE(), 3);
+VALUES (41, 'Buddy', 'Dog', 'Labrador', 2, 'Male', 'Available', CURDATE(), 3);
 
 -- 2. Insert a new adopter
 INSERT INTO Adopters (AdopterID, Name, Email, Phone, Address) 
@@ -48,4 +48,4 @@ VALUES (21, 'Happy Paws Shelter', '45 Elm Street, PetTown', 'Alice Johnson', '90
 
 -- 4. Insert a new rescuer record
 INSERT INTO Rescuers (RescuerID, Name, Phone, Organization, AdopterID, PetID, RescueDate) 
-VALUES (22, 'Sarah Connor', '9234567890', 'Pet Rescue Initiative', 25, 201, CURDATE());
+VALUES (22, 'Sarah Connor', '9234567890', 'Pet Rescue Initiative', 25, 41, CURDATE());
