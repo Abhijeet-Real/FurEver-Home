@@ -2,7 +2,6 @@ import mysql.connector
 import random
 from datetime import datetime, timedelta
 from login import get_db_credentials
-from urllib.parse import quote_plus
 
 def get_connection():
     # Load database credentials securely
