@@ -8,4 +8,5 @@ sql_files = [
     "AA02RJ57 6 Comprehensive CRUD Operations.sql",
     "AA02RJ57 7 Database Schema Modification & Optimization.sql",
     "AA02RJ57 8 Stress Testing Script.sql",
+    "AA02RJ57 9 Insertion Order.sql",
 ]
