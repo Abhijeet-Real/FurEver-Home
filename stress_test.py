@@ -27,7 +27,7 @@ def insert_bulk_records(base_id = 1):
                        (base_id, 'Stress Test Contact', base_nr))
         
         # Insert into FosterHomes
-        cursor.execute("INSERT INTO fosterhomes (FosterHomeID, Name, Address, ContactPerson, ContactPhone, Capacity, CurrentOccupancy, ContactID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+        cursor.execute("INSERT INTO fosterhomes (FosterHomeID, Name, Address, ManagerName, ContactPhone, Capacity, CurrentOccupancy, ContactID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
                        (base_id, 'Stress Test Shelter', 'Test Address, India' + str(base_id), 'Manager Name', base_nr, 50, 0, base_id))
         
         # Insert into Adopters
@@ -35,8 +35,8 @@ def insert_bulk_records(base_id = 1):
                        (base_id, 'Stress Test Adopter', 'test_adopter' + str(base_id) +'@example.com', base_nr, 'Test Address, India'))
         
         
-        # Insert into Species
-        cursor.execute("INSERT INTO species (SpeciesID, SpeciesName) VALUES (%s, %s)", 
+        # Insert into PeTSpecies
+        cursor.execute("INSERT INTO petspecies (SpeciesID, SpeciesName) VALUES (%s, %s)", 
                        (base_id, 'Dog' + str(base_id)))
 
         # Insert into Pets
@@ -64,7 +64,7 @@ def insert_bulk_records(base_id = 1):
         conn.close()
 
 if __name__ == "__main__":
-    for i in range(1, 10000):
+    for i in range(50, 1001):
         insert_bulk_records(i)
         if i % 100 == 0:
-            print(f"Inserted records for base_id {i}")
+            print(f"Inserted records upto base_id {i}")
