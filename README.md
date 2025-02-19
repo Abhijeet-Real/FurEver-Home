@@ -70,13 +70,13 @@ The **Pet Adoption and Rescue Management System** is a structured **SQL-based da
 The system is structured around several key tables:
 
 ### **📌 Key Tables**
-1️⃣ **`Pets`** - Stores pet information.
-2️⃣ **`Adopters`** - Stores adopter details.
-3️⃣ **`FosterHomes`** - Manages foster home data.
-4️⃣ **`MedicalRecords`** - Maintains pet medical history.
-5️⃣ **`Rescuers`** - Stores details of pet rescuers.
-6️⃣ **`PetSpecies`** - Normalized species table.
-7️⃣ **`CustomerFeedback`** - Stores feedback from adopters.
+1️⃣ **`Pets`** - Stores pet information.  
+2️⃣ **`Adopters`** - Stores adopter details.  
+3️⃣ **`FosterHomes`** - Manages foster home data.  
+4️⃣ **`MedicalRecords`** - Maintains pet medical history.  
+5️⃣ **`Rescuers`** - Stores details of pet rescuers.  
+6️⃣ **`PetSpecies`** - Normalized species table.  
+7️⃣ **`CustomerFeedback`** - Stores feedback from adopters.  
 
 ### **🔗 Relationships**
 - **One-to-One:** Pets → MedicalRecords, Pets → Adopters
