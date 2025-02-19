@@ -1,5 +1,8 @@
 -- Stress Testing Script for Final Schema
 
+-- Relax FOREIGN KEY Constraints
+SET FOREIGN_KEY_CHECKS = 0;
+
 -- Step 1: Bulk Insert for FosterHomes (Ensuring Availability Before Pets Insertion)
 INSERT INTO FosterHomes (FosterHomeID, Name, Address, Capacity, CurrentOccupancy, ContactID, ManagerName)
 SELECT
@@ -98,5 +101,8 @@ WHERE PetID NOT IN (SELECT PetID FROM MedicalRecords)  -- Exclude existing recor
 ORDER BY RAND()
 LIMIT 10000;
 
+
+-- Enforce FOREIGN KEY Constraints
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- End of Stress Testing Script
